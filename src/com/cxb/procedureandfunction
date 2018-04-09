@@ -1,0 +1,48 @@
+--存储函数：查询某个员工的年收入
+create or replace function queryempincome(eno in number)
+return number
+as
+    --定义变量保存员工的薪水和奖金
+    psal emp.sal%type;
+    pcomm emp.comm%type;
+begin
+    --得到该员工的月薪和奖金
+    select sal,comm into psal,pcomm from emp where empno=eno;
+    
+    --直接返回年收入
+    return psal*12+nvl(pcomm,0);
+end;
+/
+
+
+
+
+
+--out参数：查询某个员工姓名，月薪和职位    存储过程
+create or replace procedure queryempinform(eno in number,
+                                           pename out VARCHAR2,
+                                           psal   out number,
+                                           pjob   out varchar2)                             
+as
+begin
+  --得到该员工的姓名，月薪和职位
+  select ename,sal,empjob into pename ,psal,pjob from emp where empno=eno;
+
+end;
+/
+
+
+
+
+--程序包里的存储过程
+CREATE OR REPLACE
+PACKAGE BODY MYPACKAGE AS
+
+  procedure queryEmpList(dno in number,empList out empcursor) AS
+  BEGIN
+    -- TODO: procedure MYPACKAGE.queryEmpList所需的实施
+    --打开光标
+    open empList for select *from emp where deptno=dno;
+  END queryEmpList;
+
+END MYPACKAGE;
